@@ -262,6 +262,7 @@
 
 
 
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -360,6 +361,26 @@ class AppTheme {
   // A consistent dark theme can be defined here later
   static ThemeData get darkTheme => lightTheme; // For now, defaulting to light
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

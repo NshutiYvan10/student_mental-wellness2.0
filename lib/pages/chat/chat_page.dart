@@ -9,28 +9,11 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> 
-    with TickerProviderStateMixin {
+class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
-  late AnimationController _fadeController;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeOut),
-    );
-    _fadeController.forward();
-  }
 
   @override
   void dispose() {
-    _fadeController.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -44,56 +27,90 @@ class _ChatPageState extends State<ChatPage>
         children: [
           // Custom App Bar
           Container(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + 16,
-              left: 24,
-              right: 24,
-              bottom: 16,
+          padding: EdgeInsets.only(
+          top: MediaQuery.of(context).padding.top + 20,
+          left: 20,
+          right: 20,
+          bottom: 20,
+          ),
+          decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          boxShadow: [
+          BoxShadow(
+          color: Colors.black.withValues(alpha: 0.06),
+          blurRadius: 12,
+          offset: const Offset(0, 3),
+          ),
+          ],
+          ),
+          child: Row(
+          children: [
+          Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+                theme.colorScheme.primary.withValues(alpha: 0.8),
+                theme.colorScheme.secondary.withValues(alpha: 0.6),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             ),
-            decoration: BoxDecoration(
-              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Icon(
-                    Icons.groups_2_rounded,
-                    color: theme.colorScheme.primary,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Peer Support Chat',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
+                color: theme.colorScheme.primary.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+          ),
+          ],
+          ),
+          child: Icon(
+          Icons.groups_2_rounded,
+          color: Colors.white,
+          size: 26,
+          ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+              Text(
+                  'Peer Support Chat',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
                           color: theme.colorScheme.onSurface,
+                          letterSpacing: -0.5,
                         ),
                       ),
                       Text(
-                        'Connect with fellow students',
+                        'Connect with fellow students anonymously',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
+                  ),
+                ),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceVariant.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.more_vert_rounded,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      // TODO: Add menu options
+                    },
                   ),
                 ),
               ],
@@ -102,36 +119,90 @@ class _ChatPageState extends State<ChatPage>
           
           // Messages Area
           Expanded(
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: ChatService.messagesStream(),
-              builder: (context, snapshot) {
-                final docs = snapshot.data?.docs ?? [];
-                if (docs.isEmpty) {
-                  return _buildEmptyState(theme);
-                }
-                return ListView.builder(
-                  reverse: true,
-                  padding: const EdgeInsets.all(24),
-                  itemCount: docs.length,
-                  itemBuilder: (context, idx) {
-                    final data = docs[idx].data();
-                    final sender = (data['sender'] as String?) ?? 'anon';
+          child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          colors: [
+              theme.colorScheme.primary.withValues(alpha: 0.02),
+              theme.colorScheme.background,
+          ],
+          ),
+          ),
+          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: ChatService.messagesStream(),
+          builder: (context, snapshot) {
+          final docs = snapshot.data?.docs ?? [];
+          if (docs.isEmpty) {
+          return _buildEmptyState(theme);
+          }
+          return ListView.builder(
+          reverse: true,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          itemCount: docs.length,
+            itemBuilder: (context, idx) {
+                final data = docs[idx].data();
+                  final sender = (data['sender'] as String?) ?? 'anon';
                     final text = (data['text'] as String?) ?? '';
-                    final timestamp = (data['timestamp'] as Timestamp?)?.toDate();
-                    final isMe = sender == 'anon';
-                    
-                    return FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: _buildMessageBubble(theme, text, isMe, timestamp),
-                    );
-                  },
-                );
-              },
+                      final timestamp = (data['timestamp'] as Timestamp?)?.toDate();
+                      final isMe = sender == 'anon';
+
+                      // Group messages and add timestamps
+                      final previousDoc = idx > 0 ? docs[idx - 1] : null;
+                      final showTimestamp = previousDoc == null ||
+                          timestamp != null && previousDoc['timestamp'] != null &&
+                          timestamp.difference((previousDoc['timestamp'] as Timestamp).toDate()).inMinutes > 15;
+
+                      return Column(
+                        children: [
+                          if (showTimestamp && timestamp != null)
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 16),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.surface.withValues(alpha: 0.8),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                                  ),
+                                ),
+                                child: Text(
+                                  _formatMessageDate(timestamp),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 0.0, end: 1.0),
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeOutCubic,
+                            builder: (context, value, child) {
+                              return Transform.translate(
+                                offset: Offset(isMe ? 30 * (1 - value) : -30 * (1 - value), 0),
+                                child: Opacity(
+                                  opacity: value,
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: _buildMessageBubble(theme, text, isMe, timestamp),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
           
           // Input Area
-          _buildInputArea(theme),
+          _buildModernInputArea(theme),
         ],
       ),
     );
@@ -198,54 +269,145 @@ class _ChatPageState extends State<ChatPage>
   }
 
   Widget _buildMessageBubble(ThemeData theme, String text, bool isMe, DateTime? timestamp) {
-    return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 280),
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 4),
-          child: Column(
-            crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: isMe 
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.surface,
-                  borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(20),
-                    topRight: const Radius.circular(20),
-                    bottomLeft: Radius.circular(isMe ? 20 : 4),
-                    bottomRight: Radius.circular(isMe ? 4 : 20),
-                  ),
-                  border: isMe 
-                      ? null
-                      : Border.all(
-                          color: theme.colorScheme.outline.withValues(alpha: 0.1),
-                        ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.06),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+  return Align(
+  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+  child: ConstrainedBox(
+  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+  child: Container(
+  margin: const EdgeInsets.symmetric(vertical: 2),
+  child: Row(
+  mainAxisSize: MainAxisSize.min,
+  crossAxisAlignment: CrossAxisAlignment.end,
+  children: [
+  if (!isMe) ...[
+  Container(
+  width: 32,
+  height: 32,
+  margin: const EdgeInsets.only(right: 8, bottom: 2),
+  decoration: BoxDecoration(
+  gradient: LinearGradient(
+    colors: [
+      theme.colorScheme.primary.withValues(alpha: 0.7),
+      theme.colorScheme.secondary.withValues(alpha: 0.5),
+      ],
+      begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  ),
+  borderRadius: BorderRadius.circular(16),
+  boxShadow: [
+      BoxShadow(
+      color: theme.colorScheme.primary.withValues(alpha: 0.2),
+    blurRadius: 6,
+    offset: const Offset(0, 2),
+  ),
+  ],
+  ),
+    child: Icon(
+      Icons.person_rounded,
+    size: 16,
+    color: Colors.white.withValues(alpha: 0.9),
+  ),
+  ),
+  ],
+  Flexible(
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      gradient: isMe
+        ? LinearGradient(
+            colors: [
+            theme.colorScheme.primary,
+              theme.colorScheme.secondary,
+              ],
+                begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  )
+                  : LinearGradient(
+                        colors: [
+                            theme.colorScheme.surface,
+                              theme.colorScheme.surface.withValues(alpha: 0.95),
+                            ],
+                          ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(18),
+                      topRight: const Radius.circular(18),
+                      bottomLeft: Radius.circular(isMe ? 18 : 6),
+                      bottomRight: Radius.circular(isMe ? 6 : 18),
                     ),
-                  ],
-                ),
-                child: Text(
-                  text,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: isMe ? Colors.white : theme.colorScheme.onSurface,
-                    height: 1.4,
+                    border: isMe
+                        ? null
+                        : Border.all(
+                            color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                            width: 0.5,
+                          ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isMe
+                            ? theme.colorScheme.primary.withValues(alpha: 0.3)
+                            : Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        text,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: isMe ? Colors.white : theme.colorScheme.onSurface,
+                          height: 1.4,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (timestamp != null)
+                            Text(
+                              _formatTime(timestamp),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: isMe
+                                    ? Colors.white.withValues(alpha: 0.8)
+                                    : theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
-              if (timestamp != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  _formatTime(timestamp),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+              if (isMe) ...[
+                Container(
+                  width: 32,
+                  height: 32,
+                  margin: const EdgeInsets.only(left: 8, bottom: 2),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.colorScheme.secondary.withValues(alpha: 0.7),
+                        theme.colorScheme.primary.withValues(alpha: 0.5),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.secondary.withValues(alpha: 0.2),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.person_rounded,
+                    size: 16,
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
                 ),
               ],
@@ -256,44 +418,78 @@ class _ChatPageState extends State<ChatPage>
     );
   }
 
-  Widget _buildInputArea(ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
+  Widget _buildModernInputArea(ThemeData theme) {
+  return Container(
+  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+  decoration: BoxDecoration(
+  color: theme.colorScheme.surface,
+  border: Border(
+  top: BorderSide(
+  color: theme.colorScheme.outline.withValues(alpha: 0.1),
+  width: 0.5,
+  ),
+  ),
+  boxShadow: [
+      BoxShadow(
+        color: Colors.black.withValues(alpha: 0.05),
+      blurRadius: 12,
+    offset: const Offset(0, -3),
+  ),
+  ],
+  ),
+  child: Row(
+  crossAxisAlignment: CrossAxisAlignment.end,
+  children: [
+  Container(
+  width: 44,
+  height: 44,
+  decoration: BoxDecoration(
+  color: theme.colorScheme.surfaceVariant.withValues(alpha: 0.3),
+  borderRadius: BorderRadius.circular(22),
+  border: Border.all(
+  color: theme.colorScheme.outline.withValues(alpha: 0.2),
+  width: 1,
+  ),
+  ),
+  child: IconButton(
+  icon: Icon(
+  Icons.add_rounded,
+  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+  size: 22,
+  ),
+  onPressed: () {
+    // TODO: Add attachment functionality
+    },
+    ),
+  ),
+  const SizedBox(width: 12),
+  Expanded(
+  child: Container(
+    constraints: const BoxConstraints(maxHeight: 120),
+  decoration: BoxDecoration(
+    color: theme.colorScheme.surfaceVariant.withValues(alpha: 0.2),
+    borderRadius: BorderRadius.circular(24),
+  border: Border.all(
+  color: theme.colorScheme.outline.withValues(alpha: 0.15),
+  width: 1,
+  ),
+  ),
+  child: TextField(
+      controller: _controller,
+      decoration: InputDecoration(
+      hintText: 'Type a message...',
+      hintStyle: theme.textTheme.bodyLarge?.copyWith(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: theme.colorScheme.outline.withValues(alpha: 0.1),
-                ),
-              ),
-              child: TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  hintText: 'Type a message...',
-                  hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
+            border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 20,
                     vertical: 16,
                   ),
                 ),
-                style: theme.textTheme.bodyLarge,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
                 maxLines: null,
                 textCapitalization: TextCapitalization.sentences,
               ),
@@ -304,18 +500,29 @@ class _ChatPageState extends State<ChatPage>
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary,
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.secondary,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
                   color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
             child: IconButton(
-              icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+              icon: const Icon(
+                Icons.send_rounded,
+                color: Colors.white,
+                size: 22,
+              ),
               onPressed: _sendMessage,
             ),
           ),
@@ -331,11 +538,28 @@ class _ChatPageState extends State<ChatPage>
     _controller.clear();
   }
 
+  String _formatMessageDate(DateTime dateTime) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(const Duration(days: 1));
+  final messageDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+  if (messageDate == today) {
+  return 'Today';
+  } else if (messageDate == yesterday) {
+    return 'Yesterday';
+  } else {
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return '${dateTime.day} ${months[dateTime.month - 1]}';
+    }
+  }
+
   String _formatTime(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final messageDate = DateTime(date.year, date.month, date.day);
-    
+
     if (messageDate == today) {
       final hour = date.hour.toString().padLeft(2, '0');
       final minute = date.minute.toString().padLeft(2, '0');

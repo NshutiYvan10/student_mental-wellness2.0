@@ -61,37 +61,107 @@ class _MessagingHubPageState extends ConsumerState<MessagingHubPage>
           child: Column(
             children: [
               // Header
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.chat_bubble_outline_rounded,
-                      color: theme.colorScheme.primary,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Messages',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
+              Container(
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top + 16,
+              left: 20,
+              right: 20,
+              bottom: 16,
+              ),
+              decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              boxShadow: [
+              BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+              ),
+              ],
+              ),
+              child: Row(
+              children: [
+              Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                    theme.colorScheme.primary.withValues(alpha: 0.8),
+                      theme.colorScheme.secondary.withValues(alpha: 0.6),
+                  ],
+                  begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+                borderRadius: BorderRadius.circular(22),
+                  boxShadow: [
+                      BoxShadow(
+                          color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.chat_bubble_outline_rounded,
+                        color: Colors.white,
+                        size: 22,
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Messages',
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: theme.colorScheme.onSurface,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          Text(
+                            'Connect and get support',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     if (_currentUser?.role == UserRole.mentor)
-                      IconButton(
-                        onPressed: () => _showCreateGroupDialog(),
-                        icon: Icon(
-                          Icons.group_add_rounded,
-                          color: theme.colorScheme.primary,
+                      Container(
+                        width: 40,
+                        height: 40,
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceVariant.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: IconButton(
+                          onPressed: () => _showCreateGroupDialog(),
+                          icon: Icon(
+                            Icons.group_add_rounded,
+                            color: theme.colorScheme.primary,
+                            size: 20,
+                          ),
                         ),
                       ),
-                    IconButton(
-                      onPressed: () => _showSearchDialog(),
-                      icon: Icon(
-                        Icons.search_rounded,
-                        color: theme.colorScheme.primary,
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceVariant.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        onPressed: () => _showSearchDialog(),
+                        icon: Icon(
+                          Icons.search_rounded,
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                          size: 20,
+                        ),
                       ),
                     ),
                   ],
@@ -100,19 +170,52 @@ class _MessagingHubPageState extends ConsumerState<MessagingHubPage>
               
               // Tab Bar
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(12),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: BoxDecoration(
+              color: theme.colorScheme.surface.withValues(alpha: 0.9),
+              borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.1),
+                width: 0.5,
+              ),
+              boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-                child: TabBar(
-                  controller: _tabController,
-                  indicator: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(12),
+              ],
+              ),
+              child: TabBar(
+              controller: _tabController,
+                indicator: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.colorScheme.primary,
+                        theme.colorScheme.secondary,
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
+                  indicatorSize: TabBarIndicatorSize.tab,
                   labelColor: Colors.white,
-                  unselectedLabelColor: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  unselectedLabelColor: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                  labelStyle: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                  padding: const EdgeInsets.all(4),
                   tabs: const [
                     Tab(text: 'Chats'),
                     Tab(text: 'Mentors'),
@@ -197,42 +300,101 @@ class _ChatsTab extends StatelessWidget {
         final chatRooms = snapshot.data ?? [];
 
         if (chatRooms.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.chat_bubble_outline_rounded,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No conversations yet',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Start a conversation with a mentor or join a group',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+        return Center(
+        child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+        Container(
+          width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              Theme.of(context).colorScheme.secondary.withValues(alpha: 0.05),
               ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            borderRadius: BorderRadius.circular(60),
+          ),
+        child: Icon(
+            Icons.chat_bubble_outline_rounded,
+            size: 48,
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+              ),
+              ),
+                const SizedBox(height: 24),
+                  Text(
+                    'No conversations yet',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Start a conversation with a mentor or join a group to begin connecting',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).colorScheme.secondary,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.search_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Find Mentors',
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: chatRooms.length,
-          itemBuilder: (context, index) {
-            final chatRoom = chatRooms[index];
-            return _ChatRoomTile(chatRoom: chatRoom);
-          },
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        itemCount: chatRooms.length,
+        itemBuilder: (context, index) {
+        final chatRoom = chatRooms[index];
+        return _ChatRoomTile(chatRoom: chatRoom);
+        },
         );
       },
     );
@@ -352,113 +514,192 @@ class _ChatRoomTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  final theme = Theme.of(context);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+  return Container(
+  margin: const EdgeInsets.only(bottom: 4, left: 16, right: 16),
+  decoration: BoxDecoration(
+  color: theme.colorScheme.surface,
+  borderRadius: BorderRadius.circular(16),
+  border: Border.all(
+  color: theme.colorScheme.outline.withValues(alpha: 0.1),
+  width: 0.5,
+  ),
+  boxShadow: [
+  BoxShadow(
+      color: Colors.black.withValues(alpha: 0.04),
+        blurRadius: 6,
+        offset: const Offset(0, 2),
+    ),
+  ],
+  ),
+  child: Material(
+  color: Colors.transparent,
+  child: InkWell(
+  borderRadius: BorderRadius.circular(16),
+  onTap: () {
+  MessagingService.markRoomRead(chatRoom.id);
+  Navigator.push(
+  context,
+  MaterialPageRoute(
+  builder: (context) => ChatRoomPage(chatRoom: chatRoom),
+  ),
+  );
+  },
+  child: Padding(
+  padding: const EdgeInsets.all(16),
+  child: Row(
+  children: [
+    // Avatar with unread badge
+  Stack(
+    children: [
+      Container(
+      width: 56,
+      height: 56,
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        leading: Stack(
-          children: [
-            CircleAvatar(
-              radius: 28,
-              backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.1),
-              child: chatRoom.type == ChatType.group
-                  ? Icon(
-                      Icons.group_rounded,
-                      color: theme.colorScheme.primary,
-                      size: 24,
-                    )
-                  : Icon(
-                      Icons.person_rounded,
-                      color: theme.colorScheme.primary,
-                      size: 24,
-                    ),
+      gradient: LinearGradient(
+        colors: [
+          theme.colorScheme.primary.withValues(alpha: 0.8),
+        theme.colorScheme.secondary.withValues(alpha: 0.6),
+      ],
+      begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  ),
+    borderRadius: BorderRadius.circular(28),
+      boxShadow: [
+        BoxShadow(
+        color: theme.colorScheme.primary.withValues(alpha: 0.2),
+      blurRadius: 8,
+      offset: const Offset(0, 2),
+  ),
+  ],
+  ),
+  child: Icon(
+    chatRoom.type == ChatType.group
+          ? Icons.groups_rounded
+            : Icons.person_rounded,
+          color: Colors.white,
+            size: 28,
             ),
-            StreamBuilder<int>(
-              stream: MessagingService.getUnreadCount(chatRoom.id),
+            ),
+              StreamBuilder<int>(
+                stream: MessagingService.getUnreadCount(chatRoom.id),
               builder: (context, snapshot) {
                 final unread = snapshot.data ?? 0;
-                if (unread <= 0) return const SizedBox.shrink();
-                return Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: theme.colorScheme.surface,
-                        width: 2,
+              if (unread <= 0) return const SizedBox.shrink();
+              return Positioned(
+                  right: -2,
+                    top: -2,
+                    child: Container(
+                    padding: const EdgeInsets.all(6),
+                    constraints: const BoxConstraints(
+                    minWidth: 24,
+                    minHeight: 24,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                    theme.colorScheme.primary,
+                      theme.colorScheme.secondary,
+                      ],
                       ),
-                    ),
-                    child: Center(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                      BoxShadow(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                    blurRadius: 6,
+                  offset: const Offset(0, 2),
+                  ),
+                  ],
+                  ),
+                      child: Center(
                       child: Text(
                         unread > 99 ? '99+' : unread.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.white,
+                      fontSize: 10,
+                        fontWeight: FontWeight.w700,
                         ),
-                      ),
+                        ),
+                        ),
+                        ),
+                        );
+                      },
                     ),
+                  ],
+                ),
+                const SizedBox(width: 16),
+
+                // Chat info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              chatRoom.name.isEmpty ? 'Private Chat' : chatRoom.name,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (chatRoom.lastMessageAt != null)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Text(
+                                _formatTime(chatRoom.lastMessageAt!),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          if (chatRoom.type == ChatType.group)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Icon(
+                                Icons.group_rounded,
+                                size: 14,
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                              ),
+                            ),
+                          Expanded(
+                            child: Text(
+                              chatRoom.description ?? 'Tap to start chatting',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                );
-              },
+                ),
+
+                // Arrow indicator
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+                ),
+              ],
             ),
-          ],
-        ),
-        title: Text(
-          chatRoom.name.isEmpty ? 'Private Chat' : chatRoom.name,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: theme.colorScheme.onSurface,
           ),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text(
-              chatRoom.description ?? 'Tap to start chatting',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
-            ),
-          ],
-        ),
-        trailing: chatRoom.lastMessageAt != null
-            ? Text(
-                _formatTime(chatRoom.lastMessageAt!),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                ),
-              )
-            : null,
-        onTap: () {
-          MessagingService.markRoomRead(chatRoom.id);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatRoomPage(chatRoom: chatRoom),
-            ),
-          );
-        },
       ),
     );
   }
